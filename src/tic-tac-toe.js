@@ -13,6 +13,7 @@ class TicTacToe {
     if (this.field[columnIndex][rowIndex] != null) return;
     this.field[columnIndex][rowIndex] = this.currentPlayer;
     this.currentPlayer = (this.currentPlayer === "x") ? this.currentPlayer = "o" : this.currentPlayer = "x"; 
+    
     this.checkWinner();
   }
   
@@ -26,13 +27,11 @@ class TicTacToe {
   }
   
   checkWinner() {
-    let winner = "";
-    
     function checkCombination (string) {
       return (string.match(/[x]{3}|[o]{3}/)) ? string[0] : null;
     }
     
-    function getVerticalWinner(array) {
+    function getVerticalWinner(array, winner) {
       let combination = "";
       for (let y = 0; y < array.length; y++){
         combination = array[y].join("");
@@ -41,9 +40,10 @@ class TicTacToe {
           break;
         }    
       }
+      return winner;
     }
 
-    function getHorizontalWinner (array) {
+    function getHorizontalWinner (array, winner) {
       for (let y = 0; y < array.length; y++){
         let combination = [];
         for (let x = 0; x <array[y].length; x++){
@@ -53,9 +53,11 @@ class TicTacToe {
         if (winner != null) {
           break;
         }  
-      }
+      }      
+      return winner;
     }
-    function getDiagonalOneWinner (array) {
+
+    function getDiagonalOneWinner (array, winner) {
       let x = 0;
       let combination = [];
       for (let y = 2; y >=0; y--){
@@ -63,37 +65,26 @@ class TicTacToe {
         x++;
       }
         
-        winner = checkCombination(combination.join(""));
+      winner = checkCombination(combination.join(""));
+      return winner;
     }
 
-    function getDiagonalTwoWinner (array) {
+    function getDiagonalTwoWinner (array, winner) {
       let x = 0;
       let combination = [];
       for (let y = 0; y < array.length; y++){
         combination.push(array[y][x]);
         x++;
       }
-        console.log(combination);
-        winner = checkCombination(combination.join(""));
+        
+      winner = checkCombination(combination.join(""));
+      return winner;
     }
 
-
-    getVerticalWinner(this.field);
-    
-    if (winner != null) return winner;
-
-    getHorizontalWinner(this.field);
-    
-    if (winner != null) return winner;
-
-    getDiagonalOneWinner(this.field);
-    
-    if (winner != null) return winner;
-
-    getDiagonalTwoWinner(this.field);
-
-    if (winner != null) return winner;
-
+    if (!this.winner) this.winner = getVerticalWinner(this.field, this.winner);
+    if (!this.winner) this.winner = getHorizontalWinner(this.field, this.winner);
+    if (!this.winner) this.winner = getDiagonalOneWinner(this.field, this.winner);
+    if (!this.winner) this.winner = getDiagonalTwoWinner(this.field, this.winner);     
   }
 
     noMoreTurns() {
